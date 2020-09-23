@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using System.Collections.Generic;
 using System.Security.Claims;
+using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
@@ -41,6 +43,21 @@ namespace TabloidMVC.Controllers
             return View(post);
         }
 
+        public IActionResult UserPostDetails(int id)
+        {
+                int userId = GetCurrentUserProfileId();
+            var post = _postRepository.GetUserPostById(id, userId);
+
+                if (post == null)
+                {
+                    return NotFound();
+                }
+            
+            return View(post);
+        }
+
+
+
         public IActionResult Create()
         {
             var vm = new PostCreateViewModel();
@@ -66,6 +83,14 @@ namespace TabloidMVC.Controllers
                 vm.CategoryOptions = _categoryRepository.GetAll();
                 return View(vm);
             }
+        }
+
+        public IActionResult UserPosts()
+        {
+            int user = GetCurrentUserProfileId();
+            List<Post> userPosts = _postRepository.GetAllUserPost(user);
+
+            return View(userPosts);
         }
 
         private int GetCurrentUserProfileId()

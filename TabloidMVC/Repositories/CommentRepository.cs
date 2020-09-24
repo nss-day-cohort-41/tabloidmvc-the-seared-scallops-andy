@@ -21,7 +21,7 @@ namespace TabloidMVC.Repositories
                                         SELECT Id, PostId, UserProfileId, Subject, Content, CreateDateTime 
                                         FROM Comment
                                         WHERE PostId = @id
-                                        ";
+                                        ORDER BY CreateDateTime DESC;";
                     cmd.Parameters.AddWithValue("id", postId);
 
                     var reader = cmd.ExecuteReader();

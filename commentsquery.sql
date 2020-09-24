@@ -1,7 +1,11 @@
 ﻿--SELECT * FROM Comment
 SELECT Id, PostId, UserProfileId, Subject, Content, CreateDateTime 
 FROM Comment
-WHERE PostId = 2
+--WHERE PostId = 2
+ORDER BY CreateDateTime DESC
+
+--ORDER BY PublishDateTime DESC"
+
 
 
 --INSERT INTO [Comment] (

@@ -18,9 +18,9 @@ namespace TabloidMVC.Controllers
             _commentRepository = commentRepository;
         }
         // GET: CommentController
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            List<Comment> comments = _commentRepository.GetAllCommentsFromPost(1);
+            List<Comment> comments = _commentRepository.GetAllCommentsFromPost(id);
             return View(comments);
         }
 

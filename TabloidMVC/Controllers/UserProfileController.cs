@@ -11,7 +11,8 @@ using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
-    [Authorize]
+    //Roles ensures only Admin can access the routes
+    [Authorize(Roles = "Admin")]
     public class UserProfileController : Controller
     {
         private readonly IUserProfileRepository _userProfileRepository;
@@ -84,7 +85,8 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _userProfileRepository.UpdateUserProfile(profile);
+                return RedirectToAction("Index", "UserProfile");
             }
             catch
             {

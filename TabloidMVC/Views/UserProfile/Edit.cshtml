@@ -6,71 +6,77 @@
 
 <div class="container pt-5">
     <h1>User Profiles</h1>
+    <form asp-action="Edit">
+        <table class="table">
+            <thead>
+                <tr>
 
-    <table class="table">
-        <thead>
-            <tr>
-
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.FullName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.ImageLocation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.DisplayName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.CreateDateTime)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => Model.Profile.UserType.Name)
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Profile.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Profile.ImageLocation)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Profile.DisplayName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Profile.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => Model.Profile.CreateDateTime)
-                </td>
-                <td>
-                    <div class="form-group">
-                        <select asp-for="Profile.UserTypeId" class="form-control">
-                            @foreach (UserType type in Model.Types)
-                            {
-                                <option value="@type.Id">@type.Name</option>
-                            }
-                        </select>
-                        <span asp-validation-for="Profile.UserTypeId" class="text-danger"></span>
-                    </div>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.FullName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.ImageLocation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.DisplayName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.CreateDateTime)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.UserType.Name)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Profile.FullName)
                     </td>
-                <td>
-                    <form asp-action="Edit">
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Profile.ImageLocation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Profile.DisplayName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Profile.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.Profile.CreateDateTime)
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <select asp-for="Profile.UserTypeId" class="form-control">
+                                @foreach (UserType type in Model.Types)
+                                {
+                                    <option value="@type.Id">@type.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Profile.UserTypeId" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <input asp-for="Profile.Id" hidden class="form-control" />
+                        <input asp-for="Profile.FirstName" hidden class="form-control" />
+                        <input asp-for="Profile.LastName" hidden class="form-control" />
+                        <input asp-for="Profile.ImageLocation" hidden class="form-control" />
+                        <input asp-for="Profile.DisplayName" hidden class="form-control" />
+                        <input asp-for="Profile.CreateDateTime" hidden class="form-control" />
+                        <input asp-for="Profile.Email" hidden class="form-control" />
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
-                            <input type="submit" value="Save" class="fas fa-download btn btn-outline-primary mx-1"/>
+                            <input type="submit" value="Save" class="btn btn-primary" />
                             <a asp-action="Index">Back to List</a>
                         </div>
-                    </form>
                 </td>
             </tr>
         </tbody>
     </table>
+    </form>
 </div>
 
 

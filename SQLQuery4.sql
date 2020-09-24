@@ -1,1 +1,5 @@
-﻿SELECT Id, Name FROM UserType
+﻿SELECT * FROM UserProfile
+
+UPDATE UserProfile
+		SET UserTypeId = @userType
+		WHERE Id = @id

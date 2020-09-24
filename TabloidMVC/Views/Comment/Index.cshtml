@@ -12,8 +12,12 @@
 
 
     <p>
-        <a asp-action="Create">Leave a polite comment.</a>
+        <a asp-action="Create" class="btn btn-outline-primary mx-1" title="Leave a comment"><i class="fas fa-comment-medical"></i></a>
     </p>
+
+    <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Back to Post">
+        <i class="fas fa-eye"></i>
+    </a>
     <table class="table table-striped">
         <thead>
             <tr>

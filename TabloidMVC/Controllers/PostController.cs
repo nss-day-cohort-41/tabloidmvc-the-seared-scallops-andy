@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using TabloidMVC.Models;
@@ -67,6 +66,7 @@ namespace TabloidMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(PostCreateViewModel vm)
         {
             try
@@ -86,35 +86,46 @@ namespace TabloidMVC.Controllers
             }
         }
 
-        public IActionResult simpleDelete(int id)
+        public IActionResult Edit(int id)
         {
-            Post post = _postRepository.GetPublishedPostById(id);
+            PostCreateViewModel vm = new PostCreateViewModel();
+            
+             vm.CategoryOptions = _categoryRepository.GetAll();
+            var post = _postRepository.GetPublishedPostById(id);
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
+
                 post = _postRepository.GetUserPostById(id, userId);
                 if (post == null)
                 {
                     return NotFound();
                 }
             }
-            return View(post);
+            vm.Post = post;
+            return View(vm);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult simpleDelete(int id, Post post)
+        public IActionResult Edit(int id, Post post)
         {
             try
             {
-                _postRepository.DeletePost(id);
+                _postRepository.UpdatePost(post);
                 return RedirectToAction("UserPosts", "Post");
             }
-            catch (Exception ex)
+            catch
             {
-                return View(post);
+                PostCreateViewModel vm = new PostCreateViewModel();
+
+                vm.CategoryOptions = _categoryRepository.GetAll();
+                vm.Post = post;
+
+                return View(vm);
             }
-            
         }
+
 
         public IActionResult UserPosts()
         {
@@ -129,7 +140,5 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
-
-
     }
 }

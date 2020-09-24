@@ -175,7 +175,7 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public void Add(Post post)
+        public void Add(Post post) 
         {
             using (var conn = Connection)
             {

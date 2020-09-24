@@ -12,7 +12,7 @@
 
 
     <p>
-        <a asp-action="Create" class="btn btn-outline-primary mx-1" title="Leave a comment"><i class="fas fa-comment-medical"></i></a>
+        <a asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Leave a comment"><i class="fas fa-comment-medical"></i></a>
     </p>
 
     <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Back to Post">

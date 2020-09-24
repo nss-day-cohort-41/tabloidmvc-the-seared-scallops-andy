@@ -9,11 +9,11 @@ ORDER BY CreateDateTime DESC
 
 --SELECT Title FROM Post
 
---INSERT INTO [Comment] (
---	[Id], [PostId], [UserProfileId], [Subject], [Content], [CreateDateTime])
---VALUES (
---	3, 2, 1, 'is it really though?', 
---'I think it definitely is.',SYSDATETIME());
+INSERT INTO [Comment] (
+	[Id], [PostId], [UserProfileId], [Subject], [Content], [CreateDateTime])
+VALUES (
+	3, 2, 1, 'is it really though?', 
+'I think it definitely is.',SYSDATETIME());
 --SET IDENTITY_INSERT [Comment] ON
 
 --SELECT * FROM Post

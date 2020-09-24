@@ -66,6 +66,7 @@ namespace TabloidMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(PostCreateViewModel vm)
         {
             try
@@ -84,6 +85,36 @@ namespace TabloidMVC.Controllers
                 return View(vm);
             }
         }
+
+        public IActionResult Edit(int id)
+        {
+            var post = _postRepository.GetPublishedPostById(id);
+           
+                int userId = GetCurrentUserProfileId();
+                post = _postRepository.GetUserPostById(id, userId);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+            
+            return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Post post)
+        {
+            try
+            {
+                _postRepository.UpdatePost(post);
+                return RedirectToAction("UserPosts", "Post");
+            }
+            catch
+            {
+                return View(post);
+            }
+        }
+
 
         public IActionResult UserPosts()
         {

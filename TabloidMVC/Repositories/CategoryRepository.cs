@@ -89,5 +89,51 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public void DeleteCategory(int categoryId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Post
+                            SET CategoryId = 0
+                            WHERE CategoryId = @id";
+                    cmd.Parameters.AddWithValue("@id", categoryId);
+                    cmd.ExecuteNonQuery();
+                }
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Category
+                            WHERE Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", categoryId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void UpdateCategory(Category category)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            Update Category
+                            SET
+                            [Name] = @name
+                            WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@name", category.Name);
+                    cmd.Parameters.AddWithValue("@id", category.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }

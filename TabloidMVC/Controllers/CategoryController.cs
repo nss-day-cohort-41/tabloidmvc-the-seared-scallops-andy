@@ -41,12 +41,30 @@ namespace TabloidMVC.Controllers
             return View(category);
         }
 
-        //public ActionResult Edit(int id)
-        //{
 
-        //}
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Category category)
+        {
+            try
+            {
+                _categoryRepository.AddCategory(category);
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception ex)
+            {
+                return View(category);
+            }
+        }
+        
+
         //Start checking here
-
         public IActionResult UserPostDetails(int id)
         {
             int userId = GetCurrentUserProfileId();
@@ -62,63 +80,86 @@ namespace TabloidMVC.Controllers
 
 
 
-        public IActionResult Create()
+        //public IActionResult Create()
+        //{
+        //    var vm = new PostCreateViewModel();
+        //    vm.CategoryOptions = _categoryRepository.GetAll();
+        //    return View(vm);
+        //}
+
+        //[HttpPost]
+        //public IActionResult Create(PostCreateViewModel vm)
+        //{
+        //    try
+        //    {
+        //        vm.Post.CreateDateTime = DateAndTime.Now;
+        //        vm.Post.IsApproved = true;
+        //        vm.Post.UserProfileId = GetCurrentUserProfileId();
+
+        //        _postRepository.Add(vm.Post);
+
+        //        return RedirectToAction("Details", new { id = vm.Post.Id });
+        //    }
+        //    catch
+        //    {
+        //        vm.CategoryOptions = _categoryRepository.GetAll();
+        //        return View(vm);
+        //    }
+        //}
+
+        public IActionResult Delete(int id)
         {
-            var vm = new PostCreateViewModel();
-            vm.CategoryOptions = _categoryRepository.GetAll();
-            return View(vm);
+            Category category = _categoryRepository.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
         }
 
         [HttpPost]
-        public IActionResult Create(PostCreateViewModel vm)
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id, Category category)
         {
+            if (category == null)
+            {
+                return NotFound();
+            }
             try
             {
-                vm.Post.CreateDateTime = DateAndTime.Now;
-                vm.Post.IsApproved = true;
-                vm.Post.UserProfileId = GetCurrentUserProfileId();
-
-                _postRepository.Add(vm.Post);
-
-                return RedirectToAction("Details", new { id = vm.Post.Id });
+                _categoryRepository.DeleteCategory(id);
+                return RedirectToAction("Index");
             }
             catch
             {
-                vm.CategoryOptions = _categoryRepository.GetAll();
-                return View(vm);
+                return View(category);
             }
         }
 
-        public IActionResult simpleDelete(int id)
+        public IActionResult Edit(int id)
         {
-            Post post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+            Category category = _categoryRepository.GetCategoryById(id);
+            if (category ==null)
             {
-                int userId = GetCurrentUserProfileId();
-                post = _postRepository.GetUserPostById(id, userId);
-                if (post == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
-            return View(post);
+            return View(category);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult simpleDelete(int id, Post post)
+        public IActionResult Edit(int id, Category category)
         {
             try
             {
-                _postRepository.DeletePost(id);
-                return RedirectToAction("UserPosts", "Post");
+                _categoryRepository.UpdateCategory(category);
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return View(post);
+                return View(category);
             }
-
         }
-
         public IActionResult UserPosts()
         {
             int user = GetCurrentUserProfileId();

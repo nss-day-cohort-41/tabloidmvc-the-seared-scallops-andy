@@ -13,6 +13,6 @@ namespace TabloidMVC.Models.ViewModels
         //List of all tags for post
         public List<Tags> PostTagList { get; set; }
         //String of Tags selected
-        public string SelectedString { get; set; }
+        public int[] SelectedTags { get; set; }
     }
 }

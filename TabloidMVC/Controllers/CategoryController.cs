@@ -99,6 +99,7 @@ namespace TabloidMVC.Controllers
         public IActionResult Edit(int id)
         {
             Category category = _categoryRepository.GetCategoryById(id);
+
             if (category ==null)
             {
                 return NotFound();
@@ -110,6 +111,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Category category)
         {
+            if(category.Id ==1) return RedirectToAction("Index");
             try
             {
                 _categoryRepository.UpdateCategory(category);

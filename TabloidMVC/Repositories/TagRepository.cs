@@ -94,9 +94,9 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            INSERT INTO Tag (Name)
+                            INSERT INTO Tag (Name, Flag_Delete)
                             OUTPUT INSERTED.Id
-                            VALUES (@name)
+                            VALUES (@name, 0)
                                         ";
 
                     cmd.Parameters.AddWithValue("@Name", tag.Name);

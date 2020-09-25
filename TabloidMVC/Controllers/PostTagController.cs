@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
@@ -33,11 +34,15 @@ namespace TabloidMVC.Controllers
         {
             int userProfileId = GetCurrentUserProfileId();
             var post = _postRepository.GetUserPostById(id, userProfileId);
-            var tags = _postTagRepository.GetTagsRemainderByPost(post.Id);
+            List<Tags> allPostTags = _postTagRepository.GetPostTags(post.Id);
             var vm = new PostTagViewModel()
             {
                 Post = post,
-                TagList = tags
+                Tags = allPostTags.Select(t => new SelectListItem
+                { 
+                    Value = t.Id.ToString(),
+                    Text = t.Name
+                })
             };
 
             if (post == null)
@@ -49,23 +54,34 @@ namespace TabloidMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageAdd(int postId, int tagId)
+        public ActionResult ManageAdd(int postid, PostTagViewModel ptvm)
         {
-            int userProfileId = GetCurrentUserProfileId();
-            var post = _postRepository.GetUserPostById(postId, userProfileId);
-            var tags = _postTagRepository.GetTagsRemainderByPost(post.Id);
-            var vm = new PostTagViewModel()
-            {
-                Post = post,
-                TagList = tags
-            };
             try
             {
-                _postTagRepository.AddTagToPost(postId, tagId);
-                return RedirectToAction("UserPostDetails", "Post", new { @id = postId });
+                int userProfileId = GetCurrentUserProfileId();
+                var post = _postRepository.GetUserPostById(postid, userProfileId);
+                foreach (int id in ptvm.SelectedTags)
+                {
+                    ptvm.PostTags.TagId = id;
+                    ptvm.PostTags.PostId = post.Id;
+                    _postTagRepository.AddTagToPost(ptvm.PostTags.TagId, ptvm.PostTags.PostId);
+                }
+                return RedirectToAction("UserPostDetails", "Post");
             }
-            catch (Exception ex)
+            catch
             {
+                int userProfileId = GetCurrentUserProfileId();
+                var post = _postRepository.GetUserPostById(postid, userProfileId);
+                List<Tags> allPostTags = _postTagRepository.GetPostTags(post.Id);
+                var vm = new PostTagViewModel()
+                {
+                    Post = post,
+                    Tags = allPostTags.Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = t.Name
+                    })
+                };
                 return View(vm);
             }
         }

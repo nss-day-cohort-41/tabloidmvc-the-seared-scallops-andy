@@ -77,6 +77,10 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, Category category)
         {
+            if(category.Id ==1)
+            {
+                return RedirectToAction("Index");
+            }
             if (category == null)
             {
                 return NotFound();

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
@@ -12,12 +14,13 @@ using TabloidMVC.Repositories;
 namespace TabloidMVC.Controllers
 {
     [Authorize]
-    public class PostController : Controller
+    public class CategoryController : Controller
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public CategoryController(ICategoryRepository categoryRepository, 
+            IPostRepository postRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
@@ -25,35 +28,35 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            var controllers = _postRepository.GetAllPublishedPosts();
-            return View(controllers);
+            var categories = _categoryRepository.GetAll();
+            return View(categories);
         }
-
         public IActionResult Details(int id)
         {
-            var post = _postRepository.GetPublishedPostById(id);
-            if (post == null)
+            var category = _categoryRepository.GetCategoryById(id);
+            if (category == null)
             {
-                int userId = GetCurrentUserProfileId();
-                post = _postRepository.GetUserPostById(id, userId);
-                if (post == null)
-                {
-                    return NotFound();
-                }
+                    return NotFound();   
             }
-            return View(post);
+            return View(category);
         }
+
+        //public ActionResult Edit(int id)
+        //{
+
+        //}
+        //Start checking here
 
         public IActionResult UserPostDetails(int id)
         {
-                int userId = GetCurrentUserProfileId();
+            int userId = GetCurrentUserProfileId();
             var post = _postRepository.GetUserPostById(id, userId);
 
-                if (post == null)
-                {
-                    return NotFound();
-                }
-            
+            if (post == null)
+            {
+                return NotFound();
+            }
+
             return View(post);
         }
 
@@ -78,7 +81,7 @@ namespace TabloidMVC.Controllers
                 _postRepository.Add(vm.Post);
 
                 return RedirectToAction("Details", new { id = vm.Post.Id });
-            } 
+            }
             catch
             {
                 vm.CategoryOptions = _categoryRepository.GetAll();
@@ -113,7 +116,7 @@ namespace TabloidMVC.Controllers
             {
                 return View(post);
             }
-            
+
         }
 
         public IActionResult UserPosts()

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
@@ -14,7 +14,7 @@ namespace TabloidMVC.Controllers
     [Authorize]
     public class PostController : Controller
     {
-        private readonly IPostRepository _postRepository; 
+        private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
 
         public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
@@ -46,18 +46,16 @@ namespace TabloidMVC.Controllers
 
         public IActionResult UserPostDetails(int id)
         {
-                int userId = GetCurrentUserProfileId();
+            int userId = GetCurrentUserProfileId();
             var post = _postRepository.GetUserPostById(id, userId);
 
-                if (post == null)
-                {
-                    return NotFound();
-                }
-            
+            if (post == null)
+            {
+                return NotFound();
+            }
+
             return View(post);
         }
-
-
 
         public IActionResult Create()
         {
@@ -79,7 +77,7 @@ namespace TabloidMVC.Controllers
                 _postRepository.Add(vm.Post);
 
                 return RedirectToAction("Details", new { id = vm.Post.Id });
-            } 
+            }
             catch
             {
                 vm.CategoryOptions = _categoryRepository.GetAll();
@@ -90,8 +88,8 @@ namespace TabloidMVC.Controllers
         public IActionResult Edit(int id)
         {
             PostCreateViewModel vm = new PostCreateViewModel();
-            
-             vm.CategoryOptions = _categoryRepository.GetAll();
+
+            vm.CategoryOptions = _categoryRepository.GetAll();
             var post = _postRepository.GetPublishedPostById(id);
             if (post == null)
             {
@@ -127,7 +125,6 @@ namespace TabloidMVC.Controllers
             }
         }
 
-
         public IActionResult UserPosts()
         {
             int user = GetCurrentUserProfileId();
@@ -155,6 +152,7 @@ namespace TabloidMVC.Controllers
             }
             return View(post);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult simpleDelete(int id, Post post)

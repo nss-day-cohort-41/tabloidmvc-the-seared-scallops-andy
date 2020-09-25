@@ -40,6 +40,12 @@ namespace TabloidMVC.Controllers
                 new Claim(ClaimTypes.Email, userProfile.Email),
             };
 
+            //Adds Role to user credentials if the user is an Administrator. Admin role will show more menu options
+            if (userProfile.UserTypeId == 1)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            }
+
             var claimsIdentity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

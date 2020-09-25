@@ -1,0 +1,37 @@
+﻿@model TabloidMVC.Models.ViewModels.PostTagViewModel
+
+@{
+    ViewData["Title"] = "ManageAdd";
+}
+
+<h1>Manage Adding Tag</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <span>Tag Name</span>
+            </th>
+            <th>
+                <span>Add Tag</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tag in Model.TagList)
+        {
+            <tr>
+                <td>
+                    <span>@tag.Name</span>
+                </td>
+                <td>
+                    <form asp-action="ManageAdd" asp-route-postId="@Model.Post.Id" asp-route-tagId="@tag.Id">
+                        <input type="submit" value="Add" class="btn btn-danger" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Post" asp-action="UserPostDetails" asp-route-id="@Model.Post.Id">Back to My Post Details</a>

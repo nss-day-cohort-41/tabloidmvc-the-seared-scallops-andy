@@ -10,8 +10,9 @@ namespace TabloidMVC.Models.ViewModels
         public Post Post { get; set; }
         //list of all tags that can be selected
         public List<Tags> TagList{ get; set; }
-        
-
-        
+        //List of all tags for post
+        public List<Tags> PostTagList { get; set; }
+        //String of Tags selected
+        public string SelectedString { get; set; }
     }
 }

@@ -84,6 +84,36 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public List<UserProfile> CheckForAdmins()
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using(SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    SELECT UserTypeId FROM UserProfile
+                    WHERE UserTypeId = 1";
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    var adminNums = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        UserProfile adminUser = new UserProfile()
+                        {
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId"))
+                        };
+                        adminNums.Add(adminUser);
+                    }
+
+                    reader.Close();
+                    return adminNums;
+                }
+            }
+        }
+
         public UserProfile GetByEmail(string email)
         {
             using (var conn = Connection)

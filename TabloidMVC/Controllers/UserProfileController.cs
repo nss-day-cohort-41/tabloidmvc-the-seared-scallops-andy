@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
 using System.Collections.Generic;
-using System.Security.Claims;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
@@ -86,12 +84,37 @@ namespace TabloidMVC.Controllers
             try
             {
                 _userProfileRepository.UpdateUserProfile(profile);
+
+                //if the submitted change was to demote a user, check to make sure they were not the last admin
+                if (profile.UserTypeId == 2)
+                    {
+                    var numOfAdmins = _userProfileRepository.CheckForAdmins();
+                    if(numOfAdmins.Count == 0)
+                        {
+                            //Change the user type back to admin and re-submit
+                            profile.UserTypeId = 1;
+                        try
+                        {
+                            _userProfileRepository.UpdateUserProfile(profile);
+                            return RedirectToAction("LastAdminError", "UserProfile", profile);
+                        }
+                        catch
+                        {
+                            return NotFound();
+                        }
+                        }
+                    }
                 return RedirectToAction("Index", "UserProfile");
             }
             catch
-            {
-                return View();
-            }
+                {
+                    var vm = new UserProfileAdminEditViewModel()
+                    {
+                        Profile = profile,
+                        Types = _userProfileRepository.GetAllTypes(),
+                    };
+                    return View(vm);
+                }
         }
 
         // GET: ProfileController/Delete/5
@@ -113,6 +136,12 @@ namespace TabloidMVC.Controllers
             {
                 return View();
             }
+        }
+
+        //View shown if the someone attempted to demote the only Admin in the system
+        public ActionResult LastAdminError(UserProfile profile)
+        {
+            return View(profile);
         }
     }
 }

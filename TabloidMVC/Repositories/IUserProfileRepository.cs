@@ -10,5 +10,6 @@ namespace TabloidMVC.Repositories
         UserProfile GetById(int id);
         List<UserType> GetAllTypes();
         void UpdateUserProfile(UserProfile profile);
+        List<UserProfile> CheckForAdmins();
     }
 }

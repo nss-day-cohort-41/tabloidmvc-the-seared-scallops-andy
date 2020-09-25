@@ -37,7 +37,17 @@
                     @Html.DisplayFor(modelItem => Model.FullName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => Model.ImageLocation)
+                    @{ 
+                        if (Model.ImageLocation == null)
+                            {
+                            <img style="width:100px;float:left;margin-right:20px"
+                                 src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Font_Awesome_5_regular_user-circle.svg" />
+                            }
+                        else
+                            {
+                                <img style="width:100px" src="@Model.ImageLocation" alt="User Image"/>
+                            }
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => Model.DisplayName)
@@ -55,9 +65,9 @@
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Edit">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Delete">
+@*                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Delete">
                         <i class="fas fa-trash"></i>
-                    </a>
+                    </a>*@
                 </td>
             </tr>
         </tbody>

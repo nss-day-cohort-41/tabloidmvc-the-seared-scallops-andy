@@ -93,6 +93,7 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Delete/5
         public ActionResult Delete(int id)
         {
+
             return View();
         }
 

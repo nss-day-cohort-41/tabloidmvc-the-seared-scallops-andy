@@ -99,7 +99,7 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"
                             UPDATE Post
-                            SET CategoryId = 0
+                            SET CategoryId = 1
                             WHERE CategoryId = @id";
                     cmd.Parameters.AddWithValue("@id", categoryId);
                     cmd.ExecuteNonQuery();

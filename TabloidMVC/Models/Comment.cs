@@ -14,7 +14,7 @@ namespace TabloidMVC.Models
         public string Subject { get; set; }
         public string Content { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/DD/YYYY}")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime CreateDateTime { get; set; }
     }
 }

@@ -72,9 +72,11 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Edit/5
         public ActionResult Edit(int id)
         {
+            int currentUserId = GetCurrentUserProfileId();
+
             Comment comment = _commentRepository.GetcommentById(id);
 
-            if (comment == null)
+            if (comment == null || comment.UserProfileId != currentUserId)
             {
                 return NotFound();
             }
@@ -103,6 +105,13 @@ namespace TabloidMVC.Controllers
         public ActionResult Delete(int id)
         {
             Comment comment = _commentRepository.GetcommentById(id);
+
+            int currentUserId = GetCurrentUserProfileId();
+
+            if (comment.UserProfileId != currentUserId)
+            {
+                return NotFound();
+            }
 
             return View(comment);
         }

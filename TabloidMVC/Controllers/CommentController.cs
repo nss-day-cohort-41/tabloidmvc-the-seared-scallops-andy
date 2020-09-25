@@ -16,7 +16,7 @@ namespace TabloidMVC.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IPostRepository _postRepository;
-
+        
         public CommentController(ICommentRepository commentRepository, 
                                     IPostRepository postRepository)
         {
@@ -61,6 +61,7 @@ namespace TabloidMVC.Controllers
                 comment.CreateDateTime = DateAndTime.Now;
                 comment.UserProfileId = GetCurrentUserProfileId();
                 _commentRepository.AddComment(comment);
+                //this will redirect to the comments list for the correct post
                 return Redirect($"/Comment/Index/{id}");
             }
             catch
@@ -75,7 +76,7 @@ namespace TabloidMVC.Controllers
             int currentUserId = GetCurrentUserProfileId();
 
             Comment comment = _commentRepository.GetcommentById(id);
-
+            //prevents non-owning users from editing
             if (comment == null || comment.UserProfileId != currentUserId)
             {
                 return NotFound();
@@ -93,6 +94,7 @@ namespace TabloidMVC.Controllers
             {
                 
                 _commentRepository.UpdateComment(comment);
+                //redirects to comments list for correct posts
                 return Redirect($"/Comment/Index/{comment.PostId}");
             }
             catch
@@ -107,7 +109,7 @@ namespace TabloidMVC.Controllers
             Comment comment = _commentRepository.GetcommentById(id);
 
             int currentUserId = GetCurrentUserProfileId();
-
+            //prevents non-owning users from deleting
             if (comment.UserProfileId != currentUserId)
             {
                 return NotFound();

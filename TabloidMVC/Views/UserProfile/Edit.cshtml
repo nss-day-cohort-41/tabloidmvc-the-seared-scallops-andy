@@ -37,7 +37,17 @@
                         @Html.DisplayFor(modelItem => Model.Profile.FullName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => Model.Profile.ImageLocation)
+                        @{
+                            if (Model.Profile.ImageLocation == null)
+                            {
+                                <img style="width:100px;float:left;margin-right:20px"
+                                     src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Font_Awesome_5_regular_user-circle.svg" />
+                            }
+                            else
+                            {
+                                <img style="width:100px" src="@Model.Profile.ImageLocation" alt="User Image" />
+                            }
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => Model.Profile.DisplayName)

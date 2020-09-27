@@ -13,7 +13,7 @@ namespace TabloidMVC.Repositories
     {
         public PostTagRepository(IConfiguration config) : base(config) { }
 
-        public List<Tags> GetPostTags(int id)
+        public List<PostTag> GetPostTagsByPostId(int id)
         {
             using (var conn = Connection)
             {
@@ -21,34 +21,38 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            SELECT pt.Id, pt.PostId, pt.TagId, t.Name
+                            SELECT pt.Id, pt.PostId, pt.TagId
                             FROM PostTag pt
-                            JOIN Tag t on t.id = pt.TagId
-                            WHERE pt.PostId = @id
+                            JOIN Post p on pt.PostId = p.Id
+                            WHERE p.Id = @postId
                                         ";
 
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@postId", id);
 
                     var reader = cmd.ExecuteReader();
-                    var tags = new List<Tags>();
-                    while(reader.Read());
+                    var postTags = new List<PostTag>();
+                    while(reader.Read())
                     {
-                        Tags tag = new Tags
+                        PostTag postTag = new PostTag
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                            TagId = reader.GetInt32(reader.GetOrdinal("TagId")),
+
                         };
 
-                        tags.Add(tag);
+                        postTags.Add(postTag);
                     }
 
                     reader.Close();
-                    return tags;
+                    return postTags;
                 }
             }
         }
 
-    public List<Tags> GetTagsRemainderByPost(int id)
+   
+
+        public PostTag GetPostTagbyPostWithTag(int tagId, int postId)
         {
             using (var conn = Connection)
             {
@@ -56,34 +60,40 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                            SELECT t.Id, t.Name
-                            FROM Tag t
-                            Left OUTER JOIN PostTag pt
-                            ON (t.id = pt.TagId AND pt.PostId = @id)
-                            where pt.TagId IS NULL
-                                       ";
+                        SELECT
+                            pt.Id,
+                            pt.PostId,
+                            pt.TagId
+                        FROM PostTag pt
+                        JOIN Post p ON pt.PostId = p.Id
+                        WHERE pt.PostId = @postId AND pt.TagId = @tagId";
 
-                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@tagId", tagId);
 
                     var reader = cmd.ExecuteReader();
-                    var Tags = new List<Tags>();
-                    while(reader.Read())
+                    PostTag postTag = null;
+
+                    if (reader.Read())
                     {
-                        Tags tag = new Tags
+                         postTag = new PostTag
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                            PostId = reader.GetInt32(reader.GetOrdinal("PostId")),
+                            TagId = reader.GetInt32(reader.GetOrdinal("TagId")),
+
                         };
-                        Tags.Add(tag);
                     }
+
                     reader.Close();
-                    return Tags;
+
+                    return postTag;
                 }
             }
         }
 
 
-        public void AddTagToPost(int postId, int tagId)
+        public void AddTagToPost(PostTag postTag)
         {
             using (var conn = Connection)
             {
@@ -95,16 +105,54 @@ namespace TabloidMVC.Repositories
                             OUTPUT INSERTED.Id
                             VALUES(@postId, @tagId)
                                        ";
-                    cmd.Parameters.AddWithValue("@postId", postId);
-                    cmd.Parameters.AddWithValue("@tagId", tagId);
+                    cmd.Parameters.AddWithValue("@postId", postTag.PostId);
+                    cmd.Parameters.AddWithValue("@tagId", postTag.TagId);
 
                     cmd.ExecuteNonQuery();
                 }
             }
 
 
-    }
-    }
+        }
 
-    
+        public void DeletePostTag(int postTagId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM PostTag
+                            WHERE Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", postTagId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteAssociatedPostTags(int tagId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM PostTag
+                            WHERE TagId = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", tagId);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+    }
 }

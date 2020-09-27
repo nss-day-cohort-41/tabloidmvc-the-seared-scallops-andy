@@ -8,8 +8,11 @@ namespace TabloidMVC.Repositories
 {
     public interface IPostTagRepository
     {
-        List<Tags> GetPostTags(int id);
-        List<Tags> GetTagsRemainderByPost(int id);
-        void AddTagToPost(int PostId, int TagId);
+
+        public List<PostTag> GetPostTagsByPostId(int id);
+        PostTag GetPostTagbyPostWithTag(int tagId, int postId);
+        public void AddTagToPost(PostTag postTag);
+        void DeletePostTag(int postTagId);
+        void DeleteAssociatedPostTags(int tagId);
     }
 }

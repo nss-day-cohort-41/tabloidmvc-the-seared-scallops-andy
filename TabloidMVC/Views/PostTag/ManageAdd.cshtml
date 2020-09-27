@@ -6,32 +6,48 @@
 
 <h1>Manage Adding Tag</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <span>Tag Name</span>
-            </th>
-            <th>
-                <span>Add Tag</span>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var tag in Model.TagList)
-        {
-            <tr>
-                <td>
-                    <span>@tag.Name</span>
-                </td>
-                <td>
-                    <form asp-action="ManageAdd" asp-route-postId="@Model.Post.Id" asp-route-tagId="@tag.Id">
-                        <input type="submit" value="Add" class="btn btn-danger" />
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Check or Uncheck
+                            </th>
+                            <th>
+                                Tag
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.PostTagLisTag)
+                        {
+                            <tr>
+                                <td>
+                                    <input asp-for="@item.Selected" type="checkbox" checked="@item.Selected" value="@item.Id" name="AreChecked" />
+                                    @*<input name="AreChecked" type="hidden" value="false" />*@
+                                </td>
+                                <td>
+                                    @item.Name
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
 <a asp-controller="Post" asp-action="UserPostDetails" asp-route-id="@Model.Post.Id">Back to My Post Details</a>

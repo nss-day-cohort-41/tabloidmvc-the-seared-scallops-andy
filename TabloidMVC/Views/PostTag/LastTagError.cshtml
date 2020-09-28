@@ -1,0 +1,58 @@
+﻿@model TabloidMVC.Models.ViewModels.PostTagViewModel
+
+@{
+    ViewData["Title"] = "LastTagError";
+}
+
+<div class="container pt-5">
+    <h1> Manage Tags</h1>
+    <h1>We're Sorry, You may not remove the last Tag</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Check or Uncheck
+                                </th>
+                                <th>
+                                    Tag
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AllTags)
+                            {
+                                <tr>
+                                    <td>
+                                        <input asp-for="@item.Selected" type="checkbox" checked="@item.Selected" value="@item.Id" name="IsSelected" />
+
+                                    </td>
+                                    <td>
+                                        @item.Name
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+   @**@
+
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

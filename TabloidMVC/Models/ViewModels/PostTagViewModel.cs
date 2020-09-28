@@ -10,8 +10,9 @@ namespace TabloidMVC.Models.ViewModels
     public class PostTagViewModel
     {
         public Post Post { get; set; }
-        
-       
+
+
+        public List<Tags> AllTags { get; set; }
         public List<Tags> PostTagList { get; set; }
        [BindProperty]
        public List<int> IsSelected { get; set; }

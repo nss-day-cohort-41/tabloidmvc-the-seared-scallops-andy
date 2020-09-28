@@ -16,5 +16,9 @@ namespace TabloidMVC.Models
 
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime CreateDateTime { get; set; }
+
+        public bool IsCurrentUser { get; set; }
+
+        public UserProfile userProfile { get; set; }
     }
 }

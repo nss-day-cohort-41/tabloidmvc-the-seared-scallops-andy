@@ -16,18 +16,31 @@ namespace TabloidMVC.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IPostRepository _postRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
         
         public CommentController(ICommentRepository commentRepository, 
-                                    IPostRepository postRepository)
+                                    IPostRepository postRepository,
+                                    IUserProfileRepository userProfileRepository)
         {
             _commentRepository = commentRepository;
             _postRepository = postRepository;
+            _userProfileRepository = userProfileRepository;
         }
         // GET: CommentController
         public ActionResult Index(int id)
         {
             List<Comment> comments = _commentRepository.GetAllCommentsFromPost(id);
+            foreach (Comment comment in comments)
+            {
+                comment.userProfile = _userProfileRepository.GetById(comment.UserProfileId);
+                int currentUserId = GetCurrentUserProfileId();
+                if (comment.UserProfileId == currentUserId)
+                {
+                    comment.IsCurrentUser = true;
+                }
+            }
             Post post = _postRepository.GetPublishedPostById(id);
+            
             CommentViewModel cvm = new CommentViewModel
             {
                 Comments = comments,
@@ -45,9 +58,11 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentController/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
-            return View();
+            Comment comment = new Comment();
+            comment.PostId = id;
+            return View(comment);
         }
 
         // POST: CommentController/Create

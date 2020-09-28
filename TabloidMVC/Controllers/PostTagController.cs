@@ -100,7 +100,7 @@ namespace TabloidMVC.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("LastTagError", "PostTag", vm);
+                    return View(vm);
                 }
 
              }

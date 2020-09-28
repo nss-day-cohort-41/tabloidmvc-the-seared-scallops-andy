@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
@@ -239,9 +240,18 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@LastName", profile.LastName);
                     cmd.Parameters.AddWithValue("@Email", profile.Email);
                     cmd.Parameters.AddWithValue("@CreateDateTime", profile.CreateDateTime);
-                    cmd.Parameters.AddWithValue("@ImageLocation", profile.ImageLocation);
                     cmd.Parameters.AddWithValue("@UserTypeId", profile.UserTypeId);
                     cmd.Parameters.AddWithValue("@IdIsActive", profile.IdIsActive);
+                    //Checks for Null value in image location
+                    if (!string.IsNullOrWhiteSpace(profile.ImageLocation))
+                    {
+                        cmd.Parameters.AddWithValue("@ImageLocation", profile.ImageLocation);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ImageLocation", DBNull.Value);
+                    }
+
 
                     int id = (int)cmd.ExecuteScalar();
 

@@ -13,7 +13,9 @@ using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
-    [Authorize]
+
+    //Roles ensures only Admin can access the routes
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IPostRepository _postRepository;

@@ -29,6 +29,9 @@
                     <th>
                         @Html.DisplayNameFor(model => Model.Profile.UserType.Name)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => Model.Profile.IdIsActive)
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -67,6 +70,15 @@
                                 }
                             </select>
                             <span asp-validation-for="Profile.UserTypeId" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <select asp-for="Profile.IdIsActive" class="form-control">
+                                <option value="0" >Active</option>
+                                <option value="1">Deactivated</option>
+                            </select>
+                            <span asp-validation-for="Profile.IdIsActive" class="text-danger"></span>
                         </div>
                     </td>
                     <td>

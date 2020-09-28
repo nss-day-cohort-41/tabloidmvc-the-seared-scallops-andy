@@ -88,7 +88,8 @@ CREATE TABLE [Comment] (
 
 CREATE TABLE [Tag] (
   [Id] integer PRIMARY KEY IDENTITY,
-  [Name] nvarchar(50) NOT NULL
+  [Name] nvarchar(50) NOT NULL,
+  [Flag_Delete] INT DEFAULT(0)
 )
 
 CREATE TABLE [PostTag] (

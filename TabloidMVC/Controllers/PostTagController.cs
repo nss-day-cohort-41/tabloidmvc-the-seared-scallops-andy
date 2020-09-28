@@ -100,7 +100,7 @@ namespace TabloidMVC.Controllers
                 }
                 else
                 {
-                    return View(vm);
+                    return RedirectToAction("UserPostDetails", "Post", new { id = id });
                 }
 
              }

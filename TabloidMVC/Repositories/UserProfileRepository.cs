@@ -216,6 +216,35 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void AddNew(UserProfile profile)
+        {
+            using(SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        INSERT INTO UserProfile
+                                                (DisplayName, FirstName, LastName, Email, CreateDateTime, ImageLocation, UserTypeId, IdIsActive)
+                                            OUTPUT INSERTED.Id
+                                                VALUES(@DisplayName, @FirstName, @LastName, @Email, @CreateDateTime, @ImageLocation, @UserTypeId, @IdIsActive)";
+                    cmd.Parameters.AddWithValue("@DisplayName", profile.DisplayName);
+                    cmd.Parameters.AddWithValue("@FirstName", profile.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", profile.LastName);
+                    cmd.Parameters.AddWithValue("@Email", profile.Email);
+                    cmd.Parameters.AddWithValue("@CreateDateTime", profile.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@ImageLocation", profile.ImageLocation);
+                    cmd.Parameters.AddWithValue("@UserTypeId", profile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@IdIsActive", profile.IdIsActive);
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    profile.Id = id;
+
+                }
+            }
+        }
+
         public void UpdateUserProfile(UserProfile profile)
         {
             using(SqlConnection conn = Connection)

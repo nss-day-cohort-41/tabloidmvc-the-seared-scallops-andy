@@ -13,5 +13,6 @@ namespace TabloidMVC.Repositories
         List<UserProfile> CheckForAdmins();
         List<UserProfile> CheckForActiveAdmins();
         bool VerifyAdminStatus(int id);
+        void AddNew(UserProfile profile);
     }
 }

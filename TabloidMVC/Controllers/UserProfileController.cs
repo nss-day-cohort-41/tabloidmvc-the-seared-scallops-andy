@@ -54,26 +54,7 @@ namespace TabloidMVC.Controllers
             return View(user);
         }
 
-        // GET: ProfileController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ProfileController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
 
         // GET: ProfileController/Edit/5
         public ActionResult Edit(int id)
@@ -159,26 +140,6 @@ namespace TabloidMVC.Controllers
                 }
         }
 
-        // GET: ProfileController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ProfileController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
         private int GetCurrentUserProfileId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);

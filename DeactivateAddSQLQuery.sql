@@ -11,5 +11,9 @@ ALTER TABLE UserProfile
 
 */
 
-SELECT * FROM UserType
+SELECT * FROM UserProfile
 
+INSERT INTO UserProfile
+       (DisplayName, FirstName, LastName, Email, CreateDateTime, ImageLocation, UserTypeId, IdIsActive)
+      OUTPUT INSERTED.Id
+     VALUES('DougThePug', 'Doug', 'Pug', 'Pug@gmail.com', 2020-09-27, null, 2, 1)

@@ -35,8 +35,10 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+            //this ensures the post will not be null when the readtime calculator runs
             if (post != null)
             {
+                //generates an estimated readtime based on 265 words per minute
                 post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
             }
             
@@ -62,7 +64,10 @@ namespace TabloidMVC.Controllers
         {
             int userId = GetCurrentUserProfileId();
             var post = _postRepository.GetUserPostById(id, userId);
-            post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            if (post != null)
+            {
+                post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            }
 
             if (post == null)
             {

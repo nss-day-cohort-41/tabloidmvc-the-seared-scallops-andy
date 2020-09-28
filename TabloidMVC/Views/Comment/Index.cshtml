@@ -28,29 +28,50 @@
                     @Html.DisplayNameFor(model => model.Comments[0].Content)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Comments[0].userProfile.DisplayName)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Comments[0].CreateDateTime)
                 </th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
+
             @foreach (var item in Model.Comments)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Subject)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Content)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CreateDateTime)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-                    </td>
-                </tr>
+                
+
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.userProfile.DisplayName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDateTime)
+                </td>
+                @{
+                    if (item.IsCurrentUser)
+                    {
+                        <td>
+
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                        </td>
+                    }
+                }
+            </tr>
             }
         </tbody>
     </table>

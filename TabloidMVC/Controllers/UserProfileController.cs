@@ -31,6 +31,7 @@ namespace TabloidMVC.Controllers
             {
                 return RedirectToAction("AccountChangedRecently", "UserProfile");
             }
+            //Gets list of Active users. Arg of 0 is for UserProfile.IdIsActive, 0 = Active
             List<UserProfile> users = _userProfileRepository.GetAllUsers(0); 
             return View(users);
         }
@@ -43,6 +44,7 @@ namespace TabloidMVC.Controllers
             {
                 return RedirectToAction("AccountChangedRecently", "UserProfile");
             }
+            //Gets list of Active users. Arg of 1 is for UserProfile.IdIsActive, 1 = Deactivated
             List<UserProfile> deactivatedUsers = _userProfileRepository.GetAllUsers(1);
             if (deactivatedUsers.Count == 0)
             {

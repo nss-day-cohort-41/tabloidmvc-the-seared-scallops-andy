@@ -9,5 +9,6 @@ namespace TabloidMVC.Models.ViewModels
     {
         public UserProfile Profile { get; set; }
         public List<UserType> Types { get; set; }
+        
     }
 }

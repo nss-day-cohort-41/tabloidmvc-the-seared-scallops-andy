@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TabloidMVC.Repositories;
+using TabloidMVC.Tools;
 
 namespace TabloidMVC
 {
@@ -30,6 +31,8 @@ namespace TabloidMVC
             services.AddTransient<IPostTagRepository, PostTagRepository>();
             services.AddTransient<IUserProfileRepository, UserProfileRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IReadTimeCalculator, ReadTimeCalculator>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

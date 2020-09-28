@@ -19,6 +19,7 @@ namespace TabloidMVC.Models
 
         public DateTime CreateDateTime { get; set; }
 
+        [Required]
         [DisplayName("Published")]
         [DataType(DataType.Date)]
         public DateTime? PublishDateTime { get; set; }
@@ -33,5 +34,7 @@ namespace TabloidMVC.Models
         [DisplayName("Author")]
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
+
+        public int Readtime { get; set; }
     }
 }

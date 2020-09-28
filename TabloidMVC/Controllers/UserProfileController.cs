@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
@@ -22,15 +23,40 @@ namespace TabloidMVC.Controllers
             _categoryRepository = categoryRepository;
         }
         // GET: ProfileController
+
+        //GET only active users and list
         public IActionResult Index()
         {
-            List<UserProfile> users = _userProfileRepository.GetAllUsers(); 
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
+            //Gets list of Active users. Arg of 0 is for UserProfile.IdIsActive, 0 = Active
+            List<UserProfile> users = _userProfileRepository.GetAllUsers(0); 
             return View(users);
+        }
+
+        //GET deactivated users
+
+        public IActionResult ShowDeactivated()
+        {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
+            //Gets list of Active users. Arg of 1 is for UserProfile.IdIsActive, 1 = Deactivated
+            List<UserProfile> deactivatedUsers = _userProfileRepository.GetAllUsers(1);
+            if (deactivatedUsers.Count == 0)
+            {
+                return RedirectToAction("NoDeactivated", "UserProfile");
+            }
+            return View(deactivatedUsers);
         }
 
         // GET: ProfileController/Details/5
         public ActionResult Details(int id)
         {
+            Verify();
             var user = _userProfileRepository.GetById(id);
             if (user == null)
             {
@@ -39,30 +65,15 @@ namespace TabloidMVC.Controllers
             return View(user);
         }
 
-        // GET: ProfileController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ProfileController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
 
         // GET: ProfileController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
             var vm = new UserProfileAdminEditViewModel()
             {
                 Profile = _userProfileRepository.GetById(id),
@@ -81,6 +92,11 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UserProfile profile)
         {
+            //Verify that the current user's Admin status hasn't changed recently
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
             try
             {
                 _userProfileRepository.UpdateUserProfile(profile);
@@ -93,6 +109,7 @@ namespace TabloidMVC.Controllers
                         {
                             //Change the user type back to admin and re-submit
                             profile.UserTypeId = 1;
+                            profile.IdIsActive = 0;
                         try
                         {
                             _userProfileRepository.UpdateUserProfile(profile);
@@ -104,6 +121,27 @@ namespace TabloidMVC.Controllers
                         }
                         }
                     }
+                //Verify that the account to be deactivated is not the last Admin
+                else if (profile.IdIsActive == 1)
+                {
+                    var numOfAdmins = _userProfileRepository.CheckForActiveAdmins();
+                    if (numOfAdmins.Count == 0)
+                    {
+                        //Change the user type back to active and re-submit
+                        
+                        profile.IdIsActive = 0;
+                        try
+                        {
+                            _userProfileRepository.UpdateUserProfile(profile);
+                            return RedirectToAction("LastAdminDeactivateError", "UserProfile", profile);
+                        }
+                        catch
+                        {
+                            return NotFound();
+                        }
+                    }
+                }
+
                 return RedirectToAction("Index", "UserProfile");
             }
             catch
@@ -117,31 +155,63 @@ namespace TabloidMVC.Controllers
                 }
         }
 
-        // GET: ProfileController/Delete/5
-        public ActionResult Delete(int id)
+        private int GetCurrentUserProfileId()
         {
-            return View();
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
 
-        // POST: ProfileController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+//Error views//
         //View shown if the someone attempted to demote the only Admin in the system
         public ActionResult LastAdminError(UserProfile profile)
         {
             return View(profile);
+        }
+
+        public ActionResult LastAdminDeactivateError(UserProfile profile)
+        {
+            return View(profile);
+        }
+
+        public ActionResult NoDeactivated()
+        {
+            return View();
+        }
+
+        public ActionResult AccountChangedRecently()
+        {
+            try
+            {
+                UserProfile currentUser = _userProfileRepository.GetById(GetCurrentUserProfileId());
+                if (currentUser.UserTypeId == 2)
+                {
+                    return RedirectToAction("DemotedToAuthor", "Account");
+                }
+                else if (currentUser.IdIsActive == 1)
+                {
+                    return RedirectToAction("AccountNewlyDeactivated", "Account");
+                }
+                return RedirectToAction("AdminError", "UserProfile");
+            }
+            catch
+            {
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        public ActionResult AdminError()
+        {
+            return View();
+        }
+
+        public ActionResult Verify()
+        {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
+
+            return null;
         }
     }
 }

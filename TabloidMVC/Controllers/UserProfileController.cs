@@ -27,6 +27,10 @@ namespace TabloidMVC.Controllers
         //GET only active users and list
         public IActionResult Index()
         {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
             List<UserProfile> users = _userProfileRepository.GetAllUsers(0); 
             return View(users);
         }
@@ -35,6 +39,10 @@ namespace TabloidMVC.Controllers
 
         public IActionResult ShowDeactivated()
         {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
             List<UserProfile> deactivatedUsers = _userProfileRepository.GetAllUsers(1);
             if (deactivatedUsers.Count == 0)
             {
@@ -46,6 +54,7 @@ namespace TabloidMVC.Controllers
         // GET: ProfileController/Details/5
         public ActionResult Details(int id)
         {
+            Verify();
             var user = _userProfileRepository.GetById(id);
             if (user == null)
             {
@@ -59,6 +68,10 @@ namespace TabloidMVC.Controllers
         // GET: ProfileController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
             var vm = new UserProfileAdminEditViewModel()
             {
                 Profile = _userProfileRepository.GetById(id),
@@ -187,6 +200,16 @@ namespace TabloidMVC.Controllers
         public ActionResult AdminError()
         {
             return View();
+        }
+
+        public ActionResult Verify()
+        {
+            if (!_userProfileRepository.VerifyAdminStatus(GetCurrentUserProfileId()))
+            {
+                return RedirectToAction("AccountChangedRecently", "UserProfile");
+            }
+
+            return null;
         }
     }
 }

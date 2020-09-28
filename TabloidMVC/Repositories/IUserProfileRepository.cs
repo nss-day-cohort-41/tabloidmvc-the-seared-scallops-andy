@@ -6,10 +6,12 @@ namespace TabloidMVC.Repositories
     public interface IUserProfileRepository
     {
         UserProfile GetByEmail(string email);
-        List<UserProfile> GetAllUsers();
+        List<UserProfile> GetAllUsers(int IsActive);
         UserProfile GetById(int id);
         List<UserType> GetAllTypes();
         void UpdateUserProfile(UserProfile profile);
         List<UserProfile> CheckForAdmins();
+        List<UserProfile> CheckForActiveAdmins();
+        bool VerifyAdminStatus(int id);
     }
 }

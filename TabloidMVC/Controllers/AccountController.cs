@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
@@ -33,7 +34,11 @@ namespace TabloidMVC.Controllers
                 ModelState.AddModelError("Email", "Invalid email");
                 return View();
             }
-
+            //Checks to see if the account has been deactivated
+            else if (userProfile.IdIsActive == 1)
+            {
+                return RedirectToAction("Deactivated", "Account");
+            }
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
@@ -56,10 +61,36 @@ namespace TabloidMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult Deactivated()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> AccountNewlyDeactivatedAsync()
+        {
+            await HttpContext.SignOutAsync();
+            return View();
+        }
+
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult DemotedToAuthor()
+        {
+            RemoveAdminClaim();
+            return View();
+        }
+        public void RemoveAdminClaim()
+        {
+            var user = User;
+            var identity = user.Identity as ClaimsIdentity;
+            var claim = (from c in user.Claims
+                         where c.Value == "Admin"
+                         select c).Single();
+            identity.RemoveClaim(claim);
         }
     }
 }

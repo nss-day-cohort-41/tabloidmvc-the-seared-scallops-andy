@@ -45,9 +45,11 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentController/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
-            return View();
+            Comment comment = new Comment();
+            comment.PostId = id;
+            return View(comment);
         }
 
         // POST: CommentController/Create

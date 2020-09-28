@@ -129,10 +129,16 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                                         SELECT UserTypeId FROM UserProfile
                                             WHERE UserTypeId = 1
-                                            AND IdIsActive = 0";
+                                            AND IdIsActive = 0
+                                            AND Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    return reader.Read();                    
+                    if (reader.Read())
+                    {
+                        return true;
+                    }
+                    return false;                    
                 }
 
             }

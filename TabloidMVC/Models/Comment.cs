@@ -18,5 +18,7 @@ namespace TabloidMVC.Models
         public DateTime CreateDateTime { get; set; }
 
         public bool IsCurrentUser { get; set; }
+
+        public UserProfile userProfile { get; set; }
     }
 }

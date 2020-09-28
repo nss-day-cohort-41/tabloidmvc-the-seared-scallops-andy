@@ -35,13 +35,21 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
-            post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            if (post != null)
+            {
+                post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            }
+            
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
                 post = _postRepository.GetUserPostById(id, userId);
+                if (post != null)
+                {
+                    post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+                }
 
-                
+
                 if (post == null)
                 {
                     return NotFound();

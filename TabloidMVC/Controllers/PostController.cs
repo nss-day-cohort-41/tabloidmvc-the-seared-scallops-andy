@@ -8,6 +8,7 @@ using Microsoft.VisualBasic;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using TabloidMVC.Tools;
 
 namespace TabloidMVC.Controllers
 {
@@ -16,11 +17,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IReadTimeCalculator _readTimeCalculator;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, IReadTimeCalculator readTimeCalculator)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _readTimeCalculator = readTimeCalculator;
         }
 
         public IActionResult Index()
@@ -32,10 +35,23 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+            //this ensures the post will not be null when the readtime calculator runs
+            if (post != null)
+            {
+                //generates an estimated readtime based on 265 words per minute
+                post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            }
+            
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
                 post = _postRepository.GetUserPostById(id, userId);
+                if (post != null)
+                {
+                    post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+                }
+
+
                 if (post == null)
                 {
                     return NotFound();
@@ -48,6 +64,10 @@ namespace TabloidMVC.Controllers
         {
             int userId = GetCurrentUserProfileId();
             var post = _postRepository.GetUserPostById(id, userId);
+            if (post != null)
+            {
+                post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
+            }
 
             if (post == null)
             {

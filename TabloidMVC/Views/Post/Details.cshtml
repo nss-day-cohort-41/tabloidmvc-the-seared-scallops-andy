@@ -12,10 +12,13 @@
                 <h1 class="text-black-50">@Model.Category.Name</h1>
             </div>
             <div class="row justify-content-between">
+                <p class="text-secondary">Estimated Read Time: @Model.Readtime minutes</p>
+            </div>
+            <div class="row justify-content-between">
                 <p class="text-secondary">Written by @Model.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.PublishDateTime)</p>
             </div>
-        </section>
+</section>
         <hr />
         @if (!string.IsNullOrWhiteSpace(Model.ImageLocation))
         {

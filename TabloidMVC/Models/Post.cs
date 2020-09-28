@@ -34,5 +34,7 @@ namespace TabloidMVC.Models
         [DisplayName("Author")]
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
+
+        public int Readtime { get; set; }
     }
 }

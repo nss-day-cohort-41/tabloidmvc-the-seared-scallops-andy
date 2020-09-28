@@ -8,6 +8,7 @@ using Microsoft.VisualBasic;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using TabloidMVC.Tools;
 
 namespace TabloidMVC.Controllers
 {
@@ -16,11 +17,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IReadTimeCalculator _readTimeCalculator;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, IReadTimeCalculator readTimeCalculator)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _readTimeCalculator = readTimeCalculator;
         }
 
         public IActionResult Index()
@@ -36,6 +39,8 @@ namespace TabloidMVC.Controllers
             {
                 int userId = GetCurrentUserProfileId();
                 post = _postRepository.GetUserPostById(id, userId);
+
+                post.Readtime = _readTimeCalculator.CalculateReadTime(post.Content);
                 if (post == null)
                 {
                     return NotFound();

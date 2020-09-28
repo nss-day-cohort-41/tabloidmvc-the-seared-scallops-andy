@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace TabloidMVC.Models
     {
         public int Id { get; set; }
         public int PostId { get; set; }
+        
         public int TagId { get; set; }
     }
 }

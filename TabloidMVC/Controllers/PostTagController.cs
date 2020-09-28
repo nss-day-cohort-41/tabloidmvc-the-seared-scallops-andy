@@ -13,7 +13,7 @@ using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PostTagController : Controller
     {
         private readonly ITagRepository _tagRepository;
@@ -67,6 +67,7 @@ namespace TabloidMVC.Controllers
         {
             vm.Post = _postRepository.GetPublishedPostById(id);
             vm.PostTagList = _tagRepository.GetTagsByPostId(id);
+            vm.AllTags = _tagRepository.GetAllTags();
             try
             {
                 foreach(Tags t in vm.PostTagList)
@@ -76,23 +77,43 @@ namespace TabloidMVC.Controllers
                     {
                         _postTagRepository.DeletePostTag(postTag.Id);
                     }
+                    
                 }
-                foreach(int tagId in vm.IsSelected)
-                {
-                    var aPostTag = new PostTag()
-                    {
-                        PostId = id,
-                        TagId = tagId
-                    };
-                    _postTagRepository.AddTagToPost(aPostTag);
 
+
+                if (vm.IsSelected != null)
+                {
+                    foreach (int tagId in vm.IsSelected)
+
+                    {
+                        var aPostTag = new PostTag()
+                        {
+                            PostId = id,
+                            TagId = tagId
+                        };
+                        _postTagRepository.AddTagToPost(aPostTag);
+
+
+
+                    }
+                    return RedirectToAction("UserPostDetails", "Post", new { id = id });
                 }
-                return RedirectToAction("UserPostDetails", "Post", new { id = id });
-            }
+                else
+                {
+                    return RedirectToAction("UserPostDetails", "Post", new { id = id });
+                }
+
+             }
             catch
             {
                 return View(vm);
             }
+        }
+
+        public ActionResult LastTagError(PostTagViewModel vm)
+        {
+            
+            return View(vm);
         }
     }
 }

@@ -27,6 +27,14 @@ namespace TabloidMVC.Controllers
         public ActionResult Index(int id)
         {
             List<Comment> comments = _commentRepository.GetAllCommentsFromPost(id);
+            foreach (Comment comment in comments)
+            {
+                int currentUserId = GetCurrentUserProfileId();
+                if (comment.UserProfileId == currentUserId)
+                {
+                    comment.IsCurrentUser = true;
+                }
+            }
             Post post = _postRepository.GetPublishedPostById(id);
             CommentViewModel cvm = new CommentViewModel
             {

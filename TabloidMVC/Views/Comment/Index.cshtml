@@ -37,41 +37,35 @@
 
             @foreach (var item in Model.Comments)
             {
-                if (item.IsCurrentUser)
-                {
+                
 
 
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Subject)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Content)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreateDateTime)
-                        </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Subject)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDateTime)
+                </td>
+                @{
+                    if (item.IsCurrentUser)
+                    {
                         <td>
 
                             @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                             @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                         </td>
-                    </tr>
-                }
-                else
-                {
-                    <tr>
+                    } else
+                    {
                         <td>
-                            @Html.DisplayFor(modelItem => item.Subject)
+
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Content)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreateDateTime)
-                        </td>
-                    </tr>
-                }
+                    }
+                 }
+                </tr>
             }
         </tbody>
     </table>
